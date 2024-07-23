@@ -9,11 +9,12 @@ pipeline {
         stage('Setup') {
             steps {
                 script {
-                    // Install Node.js
+                    // Install Node.js and other dependencies
                     sh '''
                         curl -sL https://deb.nodesource.com/setup_${NODE_VERSION} | bash -
                         apt-get install -y nodejs
                         apt-get install -y lsof
+                        apt-get install -y procps
                     '''
                 }
             }
@@ -60,7 +61,7 @@ pipeline {
     post {
         always {
             // Clean up any processes or resources
-            sh 'lsof -t -i:3000 | xargs kill'
+            sh 'pkill -f "node app.js" || true'
         }
     }
 }
