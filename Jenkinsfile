@@ -10,8 +10,11 @@ pipeline {
             steps {
                 script {
                     // Install Node.js
-                    sh 'curl -sL https://deb.nodesource.com/setup_${NODE_VERSION} | sudo -E bash -'
-                    sh 'sudo apt-get install -y nodejs'
+                    sh '''
+                        curl -sL https://deb.nodesource.com/setup_${NODE_VERSION} | bash -
+                        apt-get install -y nodejs
+                        apt-get install -y lsof
+                    '''
                 }
             }
         }
@@ -57,7 +60,7 @@ pipeline {
     post {
         always {
             // Clean up any processes or resources
-            sh 'kill $(lsof -t -i:3000)'
+            sh 'lsof -t -i:3000 | xargs kill'
         }
     }
 }
